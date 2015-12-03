@@ -1345,10 +1345,10 @@ convert_to_openpgp (ctrl_t ctrl, gcry_sexp_t s_key, const char *passphrase,
   /* We need to use the encoded S2k count.  It is not possible to
      encode it after it has been used because the encoding procedure
      may round the value up.  */
-  s2k_count = get_standard_s2k_count_rfc4880 ();
+  s2k_count = 0; //get_standard_s2k_count_rfc4880 ();
   err = apply_protection (array, npkey, nskey, passphrase,
                           GCRY_CIPHER_AES, protect_iv, sizeof protect_iv,
-                          3, GCRY_MD_SHA1, salt, s2k_count);
+                          0, GCRY_MD_SHA1, salt, s2k_count);
   /* Turn it into the transfer key S-expression.  Note that we always
      return a protected key.  */
   if (!err)
@@ -1388,7 +1388,7 @@ convert_to_openpgp (ctrl_t ctrl, gcry_sexp_t s_key, const char *passphrase,
                                " (version 1:4)\n"
                                " (algo %s)\n"
                                " %S%S\n"
-                               " (protection sha1 aes %b 1:3 sha1 %b %s))\n",
+                               " (protection sha1 aes %b 1:0 sha1 %b %s))\n",
                                algoname,
                                curve,
                                tmpkey,

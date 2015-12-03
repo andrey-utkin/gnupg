@@ -375,7 +375,7 @@ do_encryption (const unsigned char *protbegin, size_t protlen,
       else
         {
           rc = hash_passphrase (passphrase, GCRY_MD_SHA1,
-                                3, iv+2*blklen,
+                                s2k_count ? 3 : 0, iv+2*blklen,
 				s2k_count ? s2k_count : get_standard_s2k_count(),
 				key, keylen);
           if (!rc)
@@ -1214,6 +1214,8 @@ hash_passphrase (const char *passphrase, int hashalgo,
   /* The key derive function does not support a zero length string for
      the passphrase in the S2K modes.  Return a better suited error
      code than GPG_ERR_INV_DATA.  */
+  if (s2kmode == 0)
+    return 0;
   if (!passphrase || !*passphrase)
     return gpg_error (GPG_ERR_NO_PASSPHRASE);
   return gcry_kdf_derive (passphrase, strlen (passphrase),
